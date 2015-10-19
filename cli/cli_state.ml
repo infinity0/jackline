@@ -151,19 +151,19 @@ module Connect = struct
               | None -> JID.to_idn (Xjid.jid_to_xmpp_jid (`Full config.Xconfig.jid))
               | Some x -> x
             in
-            match config.Xconfig.authenticator with
-            | `Trust_anchor x -> X509_lwt.authenticator (`Ca_file x)
-            | `Fingerprint fp ->
-               let time = Unix.gettimeofday () in
-               let fp =
-                 Nocrypto.Uncommon.Cs.of_hex
-                   (String.map (function ':' -> ' ' | x -> x) fp)
-               in
-               let fingerprints = [(certname, fp)]
-               and hash = `SHA256
-               in
-               let auth = X509.Authenticator.server_cert_fingerprint ~time ~hash ~fingerprints in
-               return auth) >>= fun authenticator ->
+            (match config.Xconfig.authenticator with
+             | `Trust_anchor x -> X509_lwt.authenticator (`Ca_file x)
+             | `Fingerprint fp ->
+                let time = Unix.gettimeofday () in
+                let fp =
+                  Nocrypto.Uncommon.Cs.of_hex
+                    (String.map (function ':' -> ' ' | x -> x) fp)
+                in
+                let fingerprints = [(certname, fp)]
+                and hash = `SHA256
+                in
+                let auth = X509.Authenticator.server_cert_fingerprint ~time ~hash ~fingerprints in
+                return auth) >>= fun authenticator ->
             let kind, show = Xmpp_callbacks.presence_to_xmpp p in
             Xmpp_callbacks.connect
               sockaddr
