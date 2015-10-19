@@ -163,7 +163,7 @@ module Connect = struct
                 and hash = `SHA256
                 in
                 let auth = X509.Authenticator.server_cert_fingerprint ~time ~hash ~fingerprints in
-                return auth) >>= fun authenticator ->
+                Lwt.return auth) >>= fun authenticator ->
             let kind, show = Xmpp_callbacks.presence_to_xmpp p in
             Xmpp_callbacks.connect
               sockaddr
