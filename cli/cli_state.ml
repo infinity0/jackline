@@ -154,7 +154,7 @@ module Connect = struct
             (X509_lwt.authenticator
                (match config.Xconfig.authenticator with
                 | `Trust_anchor x -> `Ca_file x
-                | `Fingerprint fp -> `Hex_fingerprints (`SHA256, [(certname, fp)]))) >>= fun authenticator ->
+                | `Fingerprint fp -> `Hex_cert_fingerprints (`SHA256, [(certname, fp)]))) >>= fun authenticator ->
             let kind, show = Xmpp_callbacks.presence_to_xmpp p in
             Xmpp_callbacks.connect
               sockaddr
